@@ -1,0 +1,22 @@
+{
+    "version": "1.0.4",
+    "name": "com.heytz.plugins.barcodescanner.portrait",
+    "cordova_name": "BarcodeScanner",
+    "description": "Scans Barcodes.",
+    "license": "MIT",
+    "repo": "https://github.com/wildabeast/BarcodeScanner",
+    "issue": "https://github.com/wildabeast/BarcodeScanner/issues",
+    "platforms": [
+        "ios",
+        "android",
+        "windows8",
+        "wp8",
+        "browser"
+    ],
+    "engines": [
+        {
+            "name": "cordova",
+            "version": ">=3.0.0"
+        }
+    ]
+}
