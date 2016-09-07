@@ -11,7 +11,6 @@
 #import <AVFoundation/AVFoundation.h>
 #import <AssetsLibrary/AssetsLibrary.h>
 #import <AudioToolbox/AudioToolbox.h>
-#import <Cordova/NSData+Base64.h>
 //------------------------------------------------------------------------------
 // use the all-in-one version of zxing that we built
 //------------------------------------------------------------------------------
@@ -750,7 +749,7 @@ parentViewController:(UIViewController*)parentViewController
     NSString* filePath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"tmpqrcode.jpeg"];
     [UIImageJPEGRepresentation(qrImage, 1.0) writeToFile:filePath atomically:YES];
     
-    NSString *pathBase64=[dataObj base64EncodedString];
+    NSString *pathBase64=[dataObj base64EncodedStringWithOptions:0];
     
     /* return image base64 back to cordova */
     [self.plugin returnImage:filePath format:@"QR_CODE"  data:pathBase64 callback: self.callback];
