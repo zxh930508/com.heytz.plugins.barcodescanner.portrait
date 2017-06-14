@@ -1,6 +1,9 @@
 
 Inspired by https://github.com/wildabeast/BarcodeScanner
 
+IOS 
+
+ cordova plugin add cordova-plugin-camera --variable BARCODESCANNER_USAGE_DESCRIPTION="your usage message" 
 
 android
 
