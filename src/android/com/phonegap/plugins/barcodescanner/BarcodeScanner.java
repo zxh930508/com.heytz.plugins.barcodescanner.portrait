@@ -8,12 +8,15 @@
  */
 package com.phonegap.plugins.barcodescanner;
 
+import org.apache.cordova.PermissionHelper;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.util.Log;
 
 import org.apache.cordova.CordovaPlugin;
@@ -43,9 +46,12 @@ public class BarcodeScanner extends CordovaPlugin {
     private static final String EMAIL_TYPE = "EMAIL_TYPE";
     private static final String PHONE_TYPE = "PHONE_TYPE";
     private static final String SMS_TYPE = "SMS_TYPE";
-
+    private static final String TAG = "\n=======BarcodeScanner========";
     private static final String LOG_TAG = "BarcodeScanner";
-
+    private static String _type;
+    private static String _data;
+    private static final int SCAN_SEC = 1;
+    private static final int PERMISSION_DENIED_ERROR = 20;
     private CallbackContext callbackContext;
 
     /**
@@ -58,16 +64,15 @@ public class BarcodeScanner extends CordovaPlugin {
      * Executes the request.
      *
      * This method is called from the WebView thread. To do a non-trivial amount of work, use:
-     *     cordova.getThreadPool().execute(runnable);
+     * cordova.getThreadPool().execute(runnable);
      *
      * To run on the UI thread, use:
-     *     cordova.getActivity().runOnUiThread(runnable);
+     * cordova.getActivity().runOnUiThread(runnable);
      *
      * @param action          The action to execute.
      * @param args            The exec() arguments.
      * @param callbackContext The callback context used when calling back into JavaScript.
-     * @return                Whether the action was valid.
-     *
+     * @return Whether the action was valid.
      * @sa https://github.com/apache/cordova-android/blob/master/framework/src/org/apache/cordova/CordovaPlugin.java
      */
     @Override
@@ -107,9 +112,13 @@ public class BarcodeScanner extends CordovaPlugin {
      * Starts an intent to scan and decode a barcode.
      */
     public void scan() {
+        if (!PermissionHelper.hasPermission(this, Manifest.permission.CAMERA)) {
+            // save info so we can call this method again after permissions are granted
+            PermissionHelper.requestPermission(this, SCAN_SEC,  Manifest.permission.CAMERA);
+            return;
+        }
         Intent intentScan = new Intent(SCAN_INTENT);
         intentScan.addCategory(Intent.CATEGORY_DEFAULT);
-
         this.cordova.startActivityForResult((CordovaPlugin) this, intentScan, REQUEST_CODE);
     }
 
@@ -117,7 +126,7 @@ public class BarcodeScanner extends CordovaPlugin {
      * Called when the barcode scanner intent completes.
      *
      * @param requestCode The request code originally supplied to startActivityForResult(),
-     *                       allowing you to identify who this result came from.
+     *                    allowing you to identify who this result came from.
      * @param resultCode  The integer result code returned by the child activity through its setResult().
      * @param intent      An Intent, which can return result data to the caller (various data can be attached to Intent "extras").
      */
@@ -160,10 +169,38 @@ public class BarcodeScanner extends CordovaPlugin {
      * @param data The data to encode in the bar code.
      */
     public void encode(String type, String data) {
+
         Intent intentEncode = new Intent(ENCODE_INTENT);
         intentEncode.putExtra(ENCODE_TYPE, type);
         intentEncode.putExtra(ENCODE_DATA, data);
 
         this.cordova.getActivity().startActivity(intentEncode);
+    }
+
+    /**
+     * ?????
+     *
+     * @param requestCode
+     * @param permissions
+     * @param grantResults
+     */
+    /* @Override */
+    public void onRequestPermissionResult(int requestCode, String[] permissions,
+                                          int[] grantResults) /* throws JSONException */ {
+        for (int result : grantResults) {
+            if (result == PackageManager.PERMISSION_DENIED) {
+                if (callbackContext != null) {
+                    callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.ERROR, PERMISSION_DENIED_ERROR));
+                }
+                return;
+            }
+        }
+        switch (requestCode) {
+            case SCAN_SEC:
+                if (callbackContext != null) {
+                    scan();
+                }
+                break;
+        }
     }
 }

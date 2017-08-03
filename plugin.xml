@@ -4,13 +4,17 @@
     version="1.0.4">
 
     <name>BarcodeScanner</name>
+
     <description>Scans Barcodes.</description>
     <license>MIT</license>
     <repo>https://github.com/wildabeast/BarcodeScanner</repo>
     <issue>https://github.com/wildabeast/BarcodeScanner/issues</issue>
+
     <engines>
         <engine name="cordova" version=">=3.0.0" />
-    </engines>    
+    </engines>
+
+    <dependency id="cordova-plugin-compat" version="^1.1.0" />
 
     <js-module src="www/barcodescanner.js" name="BarcodeScanner">
         <clobbers target="cordova.plugins.barcodeScanner" />
