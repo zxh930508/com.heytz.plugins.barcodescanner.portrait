@@ -104,6 +104,7 @@
             <uses-permission android:name="android.permission.FLASHLIGHT" />
             <!-- Not required to allow users to work around this -->
 <!--             <uses-feature android:name="android.hardware.camera" android:required="false" /> -->
+            <uses-feature android:name="android.hardware.camera" android:required="true" />
         </config-file>
 
         <source-file src="src/android/com.google.zxing.client.android.captureactivity.jar" target-dir="libs"/>
